@@ -1,7 +1,6 @@
 "use client";
 
 import { Transaction } from "@/app/page";
-import { Card } from "@/components/ui/card";
 import { AlertTriangle, CheckCircle, TrendingUp } from "lucide-react";
 import { startOfMonth, endOfMonth } from "date-fns";
 
@@ -9,7 +8,11 @@ interface SpendingInsightsProps {
   transactions: Transaction[];
   budgets: Record<string, number>;
 }
-
+type InsightProps = {
+  type: string;
+  icon: JSX.Element;
+  message: string;
+};
 export default function SpendingInsights({
   transactions,
   budgets,
@@ -25,9 +28,8 @@ export default function SpendingInsights({
       return acc;
     }, {} as Record<string, number>);
 
-  const insights = [];
+  const insights:InsightProps[] = [];
 
-  // Check budget overruns
   Object.entries(budgets).forEach(([category, budget]) => {
     const spent = monthlySpending[category] || 0;
     const percentage = (spent / budget) * 100;
@@ -53,7 +55,6 @@ export default function SpendingInsights({
     }
   });
 
-  // Find categories without budgets
   Object.keys(monthlySpending).forEach((category) => {
     if (!budgets[category]) {
       insights.push({
